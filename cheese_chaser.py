@@ -9,6 +9,7 @@ TILE_SIZE = 60
 FONT = ("Helvetica", "18")
 BOLD_FONT = *FONT, "bold"
 BTN_DIR_KWARGS = {"width": 3, "height": 3, "font": BOLD_FONT}
+BTN_HANDLE_KWARGS = {"width": 10}
 
 UP = {"name": "up", "text": "↑", "delta": turtle.Vec2D(0, 1), "color": "light blue"}
 DOWN = {"name": "down", "text": "↓", "delta": turtle.Vec2D(0, -1), "color": "green"}
@@ -33,29 +34,31 @@ class App(tk.Frame):
         # Buttons
         ## Directions
         self.up_btn = tk.Button(self, text=UP["text"], bg=UP["color"], **BTN_DIR_KWARGS)
-        self.up_btn.grid(column=1, row=0, columnspan=2)
+        self.up_btn.grid(column=0, row=0, columnspan=4)
         self.left_btn = tk.Button(
             self, text=LEFT["text"], bg=LEFT["color"], **BTN_DIR_KWARGS
         )
-        self.left_btn.grid(column=1, row=1)
+        self.left_btn.grid(column=0, row=1, columnspan=2)
         self.right_btn = tk.Button(
             self, text=RIGHT["text"], bg=RIGHT["color"], **BTN_DIR_KWARGS
         )
-        self.right_btn.grid(column=2, row=1)
+        self.right_btn.grid(column=2, row=1, columnspan=2)
         self.down_btn = tk.Button(
             self, text=DOWN["text"], bg=DOWN["color"], **BTN_DIR_KWARGS
         )
-        self.down_btn.grid(column=1, row=2, columnspan=2)
-        self.undo_btn = tk.Button(self, text="Correggi")
-        self.undo_btn.grid(column=1, row=3, columnspan=2)
+        self.down_btn.grid(column=0, row=2, columnspan=4)
+        self.undo_btn = tk.Button(self, text="Correggi", **BTN_HANDLE_KWARGS)
+        self.undo_btn.grid(column=0, row=3, columnspan=4)
         ## Game management
-        self.play_btn = tk.Button(self, text="Parti!")
+        self.play_btn = tk.Button(self, text="Parti!", **BTN_HANDLE_KWARGS)
         self.play_btn.grid(row=4, column=0)
-        self.reset_btn = tk.Button(self, text="Reset")
+        self.reset_btn = tk.Button(self, text="Reset", **BTN_HANDLE_KWARGS)
         self.reset_btn.grid(row=4, column=1)
-        self.new_game_btn = tk.Button(self, text="Nuovo gioco")
+        self.new_game_btn = tk.Button(self, text="Nuovo gioco", **BTN_HANDLE_KWARGS)
         self.new_game_btn.grid(row=4, column=2)
-        self.close_btn = tk.Button(self, text="Chiudi", command=parent.destroy)
+        self.close_btn = tk.Button(
+            self, text="Chiudi", command=parent.destroy, **BTN_HANDLE_KWARGS
+        )
         self.close_btn.grid(row=4, column=3)
         # Commands
         self.commands = []
