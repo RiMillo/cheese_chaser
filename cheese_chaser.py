@@ -268,6 +268,11 @@ class App(tk.Frame):
     def is_valid_move(self, n_pos):
         return all(0 <= n_xy < self.n_tiles for n_xy in n_pos)
 
+    @staticmethod
+    def get_wall(cell1, cell2):
+        # Ensure order, it makes it easier to check for existence in a list
+        return tuple(sorted((cell1, cell2)))
+
     def check_move(self, delta):
         won, message = False, None
         new_pos = self.cur_pos_n + delta
@@ -275,7 +280,7 @@ class App(tk.Frame):
             won = True
         elif not self.is_valid_move(new_pos):
             message = "Sei uscito dall'area di gioco!"
-        elif (self.cur_pos_n, new_pos) in self.walls:
+        elif self.get_wall(self.cur_pos_n, new_pos) in self.walls:
             message = "Sei andato contro un muro!"
         return won, message
 
@@ -299,7 +304,7 @@ class App(tk.Frame):
             start = self.get_random_pos()
             end = start + self.get_random_move()
             if self.is_valid_move(end):
-                self.walls.add((start, end))
+                self.walls.add(self.get_wall(start, end))
 
     generate_cheese = partialmethod(get_random_pos, 2)
 
