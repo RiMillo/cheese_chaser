@@ -9,7 +9,6 @@ TILE_SIZE = 60
 FONT = ("Helvetica", "18")
 BOLD_FONT = *FONT, "bold"
 BTN_DIR_KWARGS = {"width": 3, "height": 3, "font": BOLD_FONT}
-# BTN_DIR_KWARGS = {"font": BOLD_FONT}
 
 UP = {"name": "up", "text": "↑", "delta": turtle.Vec2D(0, 1), "color": "light blue"}
 DOWN = {"name": "down", "text": "↓", "delta": turtle.Vec2D(0, -1), "color": "green"}
@@ -27,7 +26,7 @@ class App(tk.Frame):
         self.tag_ID = 0
         self.wall_color = "red"
         self.cur_pos_n = turtle.Vec2D(0, 0)
-        self.cheese_pos = turtle.Vec2D(self.n_tiles - 1, self.n_tiles - 1)
+        self.cheese_pos = self.get_random_pos()
         self.n_walls = 5
         self.walls = set()
         self.generate_walls()
@@ -141,7 +140,10 @@ class App(tk.Frame):
         self.reset_btn.configure(command=_reset)
 
         def _new_game():
+            # Regenerate random pos
             self.generate_walls()
+            self.cheese_pos = self.get_random_pos()
+            # Redraw
             _reset()
         self.new_game_btn.configure(command=_new_game)
 
@@ -151,10 +153,10 @@ class App(tk.Frame):
         if pos is not None:
             self.turtle.teleport(*pos)
 
-    def draw_board(self, cheese_n_pos=None):
+    def draw_board(self):
         self._draw_grid()
         self._draw_starting_point()
-        self._draw_cheese(cheese_n_pos)
+        self._draw_cheese()
         self._draw_walls()
 
     def _draw_grid(self):
@@ -216,13 +218,9 @@ class App(tk.Frame):
         #
         self.reset_turtle_config(orig_pos)
 
-    def _draw_cheese(self, n_xy=None):
+    def _draw_cheese(self):
         orig_pos = self.turtle.pos()
-        cheese_pos = self.start_pos + TILE_SIZE * (
-            turtle.Vec2D(*n_xy)
-            if n_xy is not None
-            else turtle.Vec2D(self.n_tiles - 1, self.n_tiles - 1)
-        )
+        cheese_pos = self.start_pos + TILE_SIZE * self.cheese_pos
         # Recenter in tile
         cheese_pos -= turtle.Vec2D(0, TILE_SIZE / 8)
         self.turtle.teleport(*cheese_pos)
