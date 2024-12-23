@@ -67,25 +67,32 @@ class App(tk.Frame):
         self.text_commands.configure(font=BOLD_FONT)
         self.text_commands.grid(column=0, row=6, columnspan=4)
 
-        def _direction_btn(direction):
+        def _direction_func(direction, event):
+            # Event is unused but left because is needed in key-binding below
             self.commands.append(direction["name"])
             self.text_commands.insert(tk.END, direction["text"])
             tID = f"cmd{self.tag_ID}"
             self.text_commands.tag_add(tID, "end-2c", "end-1c")
             self.text_commands.tag_config(tID, background=direction["color"])
             self.tag_ID += 1
+        # Bind buttons and keys to direction functions
+        self.up_btn.configure(command=partial(_direction_func, UP, None))
+        self.parent.bind("<Up>", partial(_direction_func, UP))
+        self.down_btn.configure(command=partial(_direction_func, DOWN, None))
+        self.parent.bind("<Down>", partial(_direction_func, DOWN))
+        self.right_btn.configure(command=partial(_direction_func, RIGHT, None))
+        self.parent.bind("<Right>", partial(_direction_func, RIGHT))
+        self.left_btn.configure(command=partial(_direction_func, LEFT, None))
+        self.parent.bind("<Left>", partial(_direction_func, LEFT))
 
-        self.up_btn.configure(command=partial(_direction_btn, UP))
-        self.down_btn.configure(command=partial(_direction_btn, DOWN))
-        self.right_btn.configure(command=partial(_direction_btn, RIGHT))
-        self.left_btn.configure(command=partial(_direction_btn, LEFT))
-
-        def _undo():
+        def _undo(event):
+            # Event is unused but left because is needed in key-binding below
             if self.commands:
                 self.commands.pop(-1)
             self.text_commands.delete("end-2c", tk.END)
 
-        self.undo_btn.configure(command=_undo)
+        self.undo_btn.configure(command=partial(_undo, None))
+        self.parent.bind("<BackSpace>", _undo)
 
         # Canvas
         self.canvas = tk.Canvas(self, width=CANVAS_WH[0], height=CANVAS_WH[1])
