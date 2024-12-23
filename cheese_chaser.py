@@ -145,6 +145,7 @@ class App(tk.Frame):
             self.cheese_pos = self.get_random_pos()
             # Redraw
             _reset()
+
         self.new_game_btn.configure(command=_new_game)
 
     def reset_turtle_config(self, pos=None):
