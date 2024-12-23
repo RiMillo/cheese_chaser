@@ -188,10 +188,30 @@ class App(tk.Frame):
     def _draw_starting_point(self):
         orig_pos = self.turtle.pos()
         self.turtle.speed("fastest")
-        self.turtle.color("purple")
-        self.turtle.teleport(*(self.start_pos - turtle.Vec2D(0, TILE_SIZE / 8)))
+        pos = self.start_pos - turtle.Vec2D(0, TILE_SIZE / 5)
+        # Ears
+        delta_ear_x = TILE_SIZE / 8
+        delta_ear_y = TILE_SIZE / 4
+        for dx in [delta_ear_x, -delta_ear_x]:
+            ear_pos = pos + (dx, delta_ear_y)
+            self.turtle.teleport(*ear_pos)
+            self.turtle.begin_fill()
+            self.turtle.color("grey")
+            self.turtle.circle(TILE_SIZE / 10)
+            self.turtle.color("pink")
+            self.turtle.circle(2)
+            self.turtle.end_fill()
+        # Main head
+        self.turtle.color("grey")
+        self.turtle.teleport(*pos)
         self.turtle.begin_fill()
         self.turtle.circle(TILE_SIZE / 6)
+        self.turtle.end_fill()
+        # Nose
+        self.turtle.color("pink")
+        self.turtle.begin_fill()
+        self.turtle.teleport(*pos)
+        self.turtle.circle(2)
         self.turtle.end_fill()
         #
         self.reset_turtle_config(orig_pos)
@@ -212,6 +232,17 @@ class App(tk.Frame):
         # Draws a triangle
         self.turtle.circle(TILE_SIZE / 4, steps=3)
         self.turtle.end_fill()
+        # Holes
+        self.turtle.color("black")
+        for delta in [
+            (-TILE_SIZE / 20, TILE_SIZE / 8),
+            (TILE_SIZE / 12, TILE_SIZE / 4),
+            (-TILE_SIZE / 6, TILE_SIZE / 3),
+        ]:
+            self.turtle.teleport(*(cheese_pos + delta))
+            self.turtle.begin_fill()
+            self.turtle.circle(1)
+            self.turtle.end_fill()
         #
         self.reset_turtle_config(orig_pos)
 
