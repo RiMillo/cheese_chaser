@@ -99,7 +99,7 @@ class App(tk.Frame):
         self.canvas.grid(row=0, column=4, rowspan=10)
         # Turtle
         self.default_turtle_size = 4
-        self.default_turtle_speed = "slow"
+        self.default_turtle_speed = "slowest"
         self.turtle = turtle.RawTurtle(self.canvas)
         # Screen
         self.screen = turtle.TurtleScreen(self.canvas)
