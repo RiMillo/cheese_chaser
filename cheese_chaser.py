@@ -265,7 +265,7 @@ class App(tk.Frame):
     def grid_size(self):
         return self.n_tiles * TILE_SIZE
 
-    def is_valid_move(self, n_pos):
+    def is_inside_board(self, n_pos):
         return all(0 <= n_xy < self.n_tiles for n_xy in n_pos)
 
     @staticmethod
@@ -278,7 +278,7 @@ class App(tk.Frame):
         new_pos = self.cur_pos_n + delta
         if self.cheese_pos[0] == new_pos[0] and self.cheese_pos[1] == new_pos[1]:
             won = True
-        elif not self.is_valid_move(new_pos):
+        elif not self.is_inside_board(new_pos):
             message = "Sei uscito dall'area di gioco!"
         elif self.get_wall(self.cur_pos_n, new_pos) in self.walls:
             message = "Sei andato contro un muro!"
@@ -303,7 +303,7 @@ class App(tk.Frame):
         while len(self.walls) < self.n_walls:
             start = self.get_random_pos()
             end = start + self.get_random_move()
-            if self.is_valid_move(end):
+            if self.is_inside_board(end):
                 self.walls.add(self.get_wall(start, end))
 
     generate_cheese = partialmethod(get_random_pos, 2)
