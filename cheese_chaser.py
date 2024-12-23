@@ -1,7 +1,7 @@
 import random
 import tkinter as tk
 import turtle
-from functools import partial
+from functools import partial, partialmethod
 
 GRID_SIZE = 400
 CANVAS_WH = (GRID_SIZE, GRID_SIZE)
@@ -27,7 +27,7 @@ class App(tk.Frame):
         self.tag_ID = 0
         self.wall_color = "red"
         self.cur_pos_n = turtle.Vec2D(0, 0)
-        self.cheese_pos = self.get_random_pos()
+        self.cheese_pos = self.generate_cheese()
         self.n_walls = 5
         self.walls = set()
         self.generate_walls()
@@ -145,7 +145,7 @@ class App(tk.Frame):
         def _new_game():
             # Regenerate random pos
             self.generate_walls()
-            self.cheese_pos = self.get_random_pos()
+            self.cheese_pos = self.generate_cheese()
             # Redraw
             _reset()
 
@@ -279,9 +279,11 @@ class App(tk.Frame):
             message = "Sei andato contro un muro!"
         return won, message
 
-    def get_random_pos(self):
+    def get_random_pos(self, min_pos=None):
+        min_pos = min_pos if min_pos is not None else 0
         return turtle.Vec2D(
-            random.randrange(self.n_tiles), random.randrange(self.n_tiles)
+            random.randrange(min_pos, self.n_tiles),
+            random.randrange(min_pos, self.n_tiles),
         )
 
     @staticmethod
@@ -298,6 +300,8 @@ class App(tk.Frame):
             end = start + self.get_random_move()
             if self.is_valid_move(end):
                 self.walls.add((start, end))
+
+    generate_cheese = partialmethod(get_random_pos, 2)
 
 
 if __name__ == "__main__":
