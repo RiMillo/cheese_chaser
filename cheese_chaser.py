@@ -117,7 +117,8 @@ class App(tk.Frame):
         self.turtle.teleport(*self.start_pos)
 
         # Main function
-        def _chase():
+        def _chase(event):
+            # Event is unused but left because is needed in key-binding below
             while self.commands:
                 move = MOVES[self.commands.pop(0)]
                 self.turtle.color(move["color"])
@@ -135,7 +136,8 @@ class App(tk.Frame):
                     )
                     break
 
-        self.play_btn.configure(command=_chase)
+        self.play_btn.configure(command=partial(_chase, None))
+        self.parent.bind("<Return>", _chase)
 
         def _reset():
             # Handle commands
