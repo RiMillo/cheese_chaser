@@ -31,6 +31,7 @@ class App(tk.Frame):
         self.n_walls = 5
         self.walls = set()
         self.generate_walls()
+        self.is_restart = False
         # Buttons
         ## Directions
         self.up_btn = tk.Button(self, text=UP["text"], bg=UP["color"], **BTN_DIR_KWARGS)
@@ -116,11 +117,38 @@ class App(tk.Frame):
         self.draw_board()
         self.turtle.teleport(*self.start_pos)
 
+
+        def _reset(clear_commands):
+            self.is_restart = False
+            if clear_commands:
+                # Handle commands
+                self.commands.clear()
+                self.text_commands.delete("1.0", tk.END)
+            # Handle turtle
+            self.turtle.clear()
+            self.draw_board()
+            self.restart_turtle()
+
+        self.reset_btn.configure(command=partial(_reset, True))
+
+        def _new_game():
+            # Regenerate random pos
+            self.generate_walls()
+            self.cheese_pos = self.generate_cheese()
+            # Redraw
+            _reset(True)
+
+        self.new_game_btn.configure(command=_new_game)
+
         # Main function
         def _chase(event):
             # Event is unused but left because is needed in key-binding below
-            while self.commands:
-                move = MOVES[self.commands.pop(0)]
+            if self.is_restart:
+                _reset(False)
+            else:
+                self.is_restart = True
+            for cmd in self.commands:
+                move = MOVES[cmd]
                 self.turtle.color(move["color"])
                 won, message = self.check_move(move["delta"])
                 if message is not None:
@@ -138,27 +166,6 @@ class App(tk.Frame):
 
         self.play_btn.configure(command=partial(_chase, None))
         self.parent.bind("<Return>", _chase)
-
-        def _reset():
-            # Handle commands
-            self.commands.clear()
-            self.text_commands.delete("1.0", tk.END)
-            # Handle turtle
-            self.turtle.clear()
-            self.draw_board()
-            self.turtle.teleport(*self.start_pos)
-            self.cur_pos_n = turtle.Vec2D(0, 0)
-
-        self.reset_btn.configure(command=_reset)
-
-        def _new_game():
-            # Regenerate random pos
-            self.generate_walls()
-            self.cheese_pos = self.generate_cheese()
-            # Redraw
-            _reset()
-
-        self.new_game_btn.configure(command=_new_game)
 
     def reset_turtle_config(self, pos=None):
         self.turtle.speed(self.default_turtle_speed)
@@ -269,6 +276,10 @@ class App(tk.Frame):
             self.turtle.goto(start + TILE_SIZE * wall_dir)
         #
         self.reset_turtle_config(orig_pos)
+
+    def restart_turtle(self):
+        self.turtle.teleport(*self.start_pos)
+        self.cur_pos_n = turtle.Vec2D(0, 0)
 
     @property
     def grid_size(self):
